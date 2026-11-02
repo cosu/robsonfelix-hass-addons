@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.77] - 2026-11-02
+
+### Added
+- `persistent_home_paths` option: paths under `/root` (e.g. `.ssh`, `.config/gh`, `.config/git`) are symlinked to `/config/home/` (the add-on's private `addon_config` dir), so SSH keys, CLI logins and tool config survive add-on updates. Existing files are moved over on first start without overwriting anything; unsafe paths are skipped. Empty by default, so nothing changes unless you opt in
+- `rsync` in the image (AppArmor keeps `/usr` read-only, so it can't be installed at runtime)
+
 ## [1.2.76] - 2026-11-01
 
 ### Fixed

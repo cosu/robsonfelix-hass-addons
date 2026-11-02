@@ -56,6 +56,13 @@ configuration:
       dans un répertoire persistant du volume HA ; elles survivent donc aux mises à
       jour et reconstructions du module complémentaire. Utilisez cette option pour
       ajouter des serveurs MCP personnalisés sans forker le module complémentaire.
+  persistent_home_paths:
+    name: Chemins Persistants du Home
+    description: >-
+      Chemins relatifs à /root (p. ex. « .ssh », « .config/gh ») conservés dans
+      le répertoire privé /config/home du module complémentaire ; ils survivent donc
+      aux mises à jour et reconstructions. Utilisez cette option pour les clés SSH,
+      les connexions CLI et la configuration d'autres outils.
   auto_launch_claude:
     name: Lancement Automatique de Claude Code
     description: >-

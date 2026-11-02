@@ -1,6 +1,6 @@
 name: Claude Code
 description: Run Claude Code AI assistant inside Home Assistant to create automations, debug issues, and manage your smart home configuration
-version: "1.2.76"
+version: "1.2.77"
 slug: claudecode
 url: https://github.com/robsonfelix/robsonfelix-hass-addons
 arch:
@@ -41,6 +41,7 @@ options:
   enable_remote_control: false
   remote_control_session_prefix: HomeAssistant
   extra_npm_packages: []
+  persistent_home_paths: []
   remote_control_server: false
   remote_control_permission_mode: default
 schema:
@@ -61,6 +62,8 @@ schema:
   remote_control_session_prefix: str
   extra_npm_packages:
     - str?
+  persistent_home_paths:
+    - "match(^[A-Za-z0-9._-][A-Za-z0-9._/-]*$)?"
   remote_control_server: bool
   remote_control_permission_mode: list(default|acceptEdits|auto|plan|dontAsk)
 environment:

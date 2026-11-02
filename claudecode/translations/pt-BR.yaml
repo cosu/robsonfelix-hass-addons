@@ -75,6 +75,13 @@ configuration:
       persistente no volume do HA, sobrevivendo a atualizações e reconstruções do
       add-on. Use para adicionar servidores MCP personalizados sem fazer fork do
       add-on.
+  persistent_home_paths:
+    name: Caminhos Persistentes da Home
+    description: >-
+      Caminhos relativos a /root (ex.: ".ssh", ".config/gh") mantidos no
+      diretório privado /config/home do add-on, sobrevivendo a atualizações e
+      reconstruções do add-on. Use para chaves SSH, logins de CLI e outras
+      configurações de ferramentas.
   remote_control_server:
     name: Servidor de Controle Remoto
     description: >-

@@ -85,6 +85,12 @@ configuration:
       "some-mcp@1.4.2") installed on every add-on start into a persistent
       directory on the HA volume, so they survive add-on updates and rebuilds.
       Use this to add custom MCP servers without forking the add-on.
+  persistent_home_paths:
+    name: Persistent Home Paths
+    description: >-
+      Paths relative to /root (e.g. ".ssh", ".config/gh") that are kept in
+      the add-on's private /config/home directory, so they survive add-on updates
+      and rebuilds. Use for SSH keys, CLI logins and other tool config.
   remote_control_server:
     name: Remote Control Server
     description: >-

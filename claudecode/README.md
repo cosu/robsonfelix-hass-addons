@@ -177,6 +177,7 @@ Then: `action: script.claude_agent` with `prompt:` / `run_id:` data.
 | `enable_remote_control` | View and steer the session from claude.ai/code or the Claude mobile app. See the security note below | false |
 | `remote_control_session_prefix` | Prefix for auto-generated Remote Control session names | HomeAssistant |
 | `extra_npm_packages` | List of npm package specs to install at every container start under `/homeassistant/.claudecode/npm-global` (persistent across add-on rebuilds). Bin dir is on `PATH`. Use to add custom MCP servers without forking the Dockerfile. | `[]` |
+| `persistent_home_paths` | Paths under `/root` kept in `/config/home` so they survive add-on updates. See [Persistent home files](#persistent-home-files). | `[]` |
 | `remote_control_server` | Run a Remote Control server at boot so you can start new sessions from claude.ai/code or the Claude mobile app. Requires `enable_remote_control` | false |
 | `remote_control_permission_mode` | Permission mode for sessions started through the server: `default`, `acceptEdits`, `auto`, `plan` or `dontAsk` | default |
 
@@ -224,6 +225,28 @@ The MCP registration itself is persistent (stored in `~/.claude/settings.json`, 
 | `/media` | Media folder | read-write |
 | `/ssl` | SSL certificates | read-only |
 | `/backup` | Backups | read-only |
+| `/config` | This add-on's private config dir (`addon_configs/<slug>` on the host) | read-write |
+
+### Persistent home files
+
+Add-on updates recreate the container, which resets `/root`. Paths listed in `persistent_home_paths` are symlinked to `/config/home/` so they survive. Common choices:
+
+| Path | Holds |
+|------|-------|
+| `~/.ssh` | SSH keys, `config`, `known_hosts` |
+| `~/.config/gh` | GitHub CLI auth (`gh auth login`) |
+| `~/.config/git` | `git config --global` settings |
+
+```yaml
+persistent_home_paths:
+  - .ssh
+  - .config/gh
+  - .config/git
+```
+
+Restart the add-on after changing the list. Existing files are moved over on first start without overwriting anything. Paths that are absolute, contain `..`, or overlap the add-on's own `.claude` links are skipped with a warning in the log.
+
+`/config` is private to this add-on (other add-ons can't read it), but it is included in Home Assistant backups. If you keep keys there, encrypt your backups and use a dedicated key.
 
 ## Customizing Claude's Instructions
 

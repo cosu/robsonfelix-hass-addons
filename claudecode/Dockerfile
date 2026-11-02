@@ -57,6 +57,7 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     openssh-client \
+    rsync \
     libstdc++ \
     ncurses \
     vim \
@@ -212,6 +213,20 @@ CMD ["/bin/bash", "-c", "\
   if [ ! -L /root/.claude ]; then rm -rf /root/.claude; ln -s $PERSIST_DIR /root/.claude; fi && \
   if [ ! -L /root/.config/claude-code ]; then rm -rf /root/.config/claude-code; ln -s $PERSIST_DIR/config /root/.config/claude-code; fi && \
   if [ ! -L /root/.claude.json ]; then touch $PERSIST_DIR/.claude.json; rm -f /root/.claude.json; ln -s $PERSIST_DIR/.claude.json /root/.claude.json; fi && \
+  PERSIST_HOME=/config/home && \
+  HOME_PATHS=$(jq -r '(.persistent_home_paths // [])[]' /data/options.json) && \
+  for p in $HOME_PATHS; do \
+    case \"$p\" in \
+      /*|.|./*|*/.|*/./*|*..*|.claude|.claude/*|.claude.json|.config|.config/claude-code*) \
+        echo \"[WARN] persistent_home_paths: skipping unsafe path $p\"; continue;; \
+    esac; \
+    if [ ! -L /root/$p ]; then \
+      mkdir -p $PERSIST_HOME/$p && cp -an /root/$p/. $PERSIST_HOME/$p/ 2>/dev/null; \
+      rm -rf /root/$p && mkdir -p $(dirname /root/$p) && ln -s $PERSIST_HOME/$p /root/$p; \
+    fi; \
+  done && \
+  if [ -d $PERSIST_HOME/.ssh ]; then chmod 700 $PERSIST_HOME/.ssh; fi && \
+  if [ -d $PERSIST_HOME/.config/git ]; then touch $PERSIST_HOME/.config/git/config; fi && \
   FONT_SIZE=$(jq -r '.terminal_font_size // 14' /data/options.json) && \
   THEME=$(jq -r '.terminal_theme // \"dark\"' /data/options.json) && \
   SESSION_PERSIST=$(jq -r 'if .session_persistence == null then true else .session_persistence end' /data/options.json) && \
